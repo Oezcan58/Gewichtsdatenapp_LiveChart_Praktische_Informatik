@@ -12,6 +12,8 @@
         <ShellContent Title="Werte"
                   Icon="list.png"
                   ContentTemplate="{DataTemplate view:WerteSeite}" />
+        <ShellContent Title="Grafik"
+                  ContentTemplate="{DataTemplate view:GrafenSeite}" />
 
     </TabBar>
 </Shell>

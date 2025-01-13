@@ -6,17 +6,17 @@ namespace Gewichtsdatenapp_LiveChart.View;
 
 public partial class WerteSeite : ContentPage
 {
-    private ObservableCollection<Werte> _werteListe;
-
     public WerteSeite()
     {
         InitializeComponent();
-        BindingContext = new BaseViewModel();
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        (BindingContext as BaseViewModel)?.ReloadData(); // Daten neu laden
+       if (BindingContext is BaseViewModel viewModel) // Daten neu laden
+        {
+            await viewModel.ReloadDataAsync();
+        }
     }
 }

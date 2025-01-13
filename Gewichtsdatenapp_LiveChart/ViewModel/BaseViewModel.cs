@@ -1,53 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reflection;
+﻿using System.Collections.ObjectModel;
 using System.Text;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Gewichtsdatenapp_LiveChart.Model;
+using Gewichtsdatenapp_LiveChart.Services;
+
 
 namespace Gewichtsdatenapp_LiveChart.ViewModel
 {
     public partial class BaseViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private double weight;
+        private readonly ISpeicherplatz _speicherplatz;
 
         [ObservableProperty]
-        private double height;
+        private double _weight;
 
         [ObservableProperty]
-        private int age;
+        private double _height;
 
         [ObservableProperty]
-        private string gender = string.Empty;
+        private int _age;
 
-        // Private Feld für die Collection
+        [ObservableProperty]
+        private string _gender = string.Empty;
+        [ObservableProperty]
+        private DateTime _Date = DateTime.Now;
+        /*[ObservableProperty]
+        private bool _isRefreshing;*/
+        [ObservableProperty]
         private ObservableCollection<Werte> _gewichtsdaten;
-
-        // Öffentliche Property
-        public ObservableCollection<Werte> Gewichtsdaten
-        {
-            get => _gewichtsdaten;
-            set => SetProperty(ref _gewichtsdaten, value);
-        }
 
         public BaseViewModel()
         {
-            _gewichtsdaten = new ObservableCollection<Werte>(App.StorageService.LoadData());
-            Age = 0;
-            Gender = string.Empty;
+            _speicherplatz = App.Speicherplatz;
+            _gewichtsdaten = new ObservableCollection<Werte>(_speicherplatz.LoadData());
         }
 
         [RelayCommand]
-        public void AddWerte()
+        public async Task SaveDataAsync()
         {
-            if (Weight > 0 && Height > 0 && Age > 0 && !string.IsNullOrEmpty(Gender))
+            await _speicherplatz.SaveDataAsync(Gewichtsdaten.ToList());
+        }
+
+        [RelayCommand]
+        public async Task ReloadDataAsync()
+        {
+            try
             {
-                var newWerte = new Werte
+                /*IsRefreshing = true;*/
+                var data = await _speicherplatz.LoadDataAsync();
+                Gewichtsdaten.Clear();
+                foreach (var item in data)
+                {
+                    Gewichtsdaten.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                await App.Current.MainPage.DisplayAlert("Fehler", "Laden fehlgeschlagen", "OK");
+                System.Diagnostics.Debug.WriteLine($"Reload error: {ex.Message}");
+            }
+           /* finally
+            {
+                IsRefreshing = false;
+            }*/
+        }
+
+
+        [RelayCommand/*(CanExecute = nameof(CanAddWerte))*/]
+        public async Task AddWerteAsync()
+        {
+           
+            if (Weight > 0 &&Weight<590 && Height > 0 && Height<2.80 && Age > 18 && Age<120 && !string.IsNullOrEmpty(Gender))
+            {
+                var neueWerte = new Werte
                 {
                     Weight = Weight,
                     Height = Height,
@@ -55,15 +81,18 @@ namespace Gewichtsdatenapp_LiveChart.ViewModel
                     Gender = Gender
                 };
 
-                Gewichtsdaten.Add(newWerte);
-                SaveData();
-                ReloadData(); // Daten neu laden
+                Gewichtsdaten.Add(neueWerte);
+                await SaveDataAsync();
+                /*ReloadData();*/
+                /*var grafenViewModel = new GrafenViewModel();
+                grafenViewModel.LoadChartData();*/
 
-                // Felder zurücksetzen
                 Weight = 0;
                 Height = 0;
                 Age = 0;
                 Gender = string.Empty;
+
+                
 
                 App.Current.MainPage.DisplayAlert("Gespeicherte Daten", "Gespeichert", "OK");
             }
@@ -72,46 +101,64 @@ namespace Gewichtsdatenapp_LiveChart.ViewModel
                 App.Current.MainPage.DisplayAlert("Fehler", "Daten konnten nicht gespeichert werden", "OK");
             }
         }
-
+       /* private bool CanAddWerte()
+        {
+            return Weight > 0 && Height > 0 && Age > 18 && !string.IsNullOrEmpty(Gender);
+        }*/
         [RelayCommand]
         public void ShowData()
         {
-            ReloadData(); // Daten vor dem Anzeigen neu laden
+            /*ReloadData();*/
 
-            var dataString = new StringBuilder();
-            foreach (var entry in Gewichtsdaten)
+            var Ausgabe = new StringBuilder();
+            foreach (var Eingabe in Gewichtsdaten)
             {
-                dataString.AppendLine($"Datum: {entry.Date:dd.MM.yyyy}, Gewicht: {entry.Weight} kg, Größe: {entry.Height} m, Alter: {entry.Age}, Geschlecht: {entry.Gender}, BMI: {entry.BMI}, Gewichtsklasse: {entry.Gewichtsklasse}");
+                Ausgabe.AppendLine($"Datum: {Eingabe.Date:dd.MM.yyyy}, Gewicht: {Eingabe.Weight} kg, Größe: {Eingabe.Height} m, Alter: {Eingabe.Age}, Geschlecht: {Eingabe.Gender}, BMI: {Eingabe.Bmi}, Gewichtsklasse: {Eingabe.Gewichtsklasse}");
             }
 
-            App.Current.MainPage.DisplayAlert("Gespeicherte Daten", dataString.ToString(), "OK");
+            App.Current.MainPage.DisplayAlert("Gespeicherte Daten", Ausgabe.ToString(), "OK");
         }
 
         [RelayCommand]
-        public void DeleteWerte(Werte werte)
+        public async Task DeleteWerteAsync(Werte werte)
         {
-            if (werte != null)
+            if (werte == null) return;
+
+            bool answer = await App.Current.MainPage.DisplayAlert(
+                "Löschen bestätigen",
+                "Möchten Sie diesen Eintrag wirklich löschen?",
+                "Ja",
+                "Nein");
+
+            if (answer)
             {
-                Gewichtsdaten.Remove(werte);
-                SaveData();
-                ReloadData(); // Daten nach dem Löschen neu laden
-                App.Current.MainPage.DisplayAlert("Erfolg", "Eintrag wurde gelöscht", "OK");
+                try
+                {
+                    Gewichtsdaten.Remove(werte);
+                    await SaveDataAsync();
+                    await App.Current.MainPage.DisplayAlert("Erfolg", "Eintrag wurde gelöscht", "OK");
+                }
+                catch (Exception ex)
+                {
+                    await App.Current.MainPage.DisplayAlert("Fehler", "Löschen fehlgeschlagen", "OK");
+                    System.Diagnostics.Debug.WriteLine($"Delete error: {ex.Message}");
+                }
             }
         }
-
-        public void SaveData()
-        {
-            App.StorageService.SaveData(Gewichtsdaten.ToList());
-        }
-
-        public void ReloadData()
-        {
-            var updatedData = App.StorageService.LoadData();
-            Gewichtsdaten.Clear(); // Bestehende Daten löschen
-            foreach (var item in updatedData)
-            {
-                Gewichtsdaten.Add(item);
-            }
-        }
+        /* [RelayCommand]
+         public void SaveData()
+         {
+             App.Speicherplatz.SaveData(Gewichtsdaten.ToList());
+         }
+         [RelayCommand]
+         public void ReloadData()
+         {
+             var updatedData = App.Speicherplatz.LoadData();
+             Gewichtsdaten.Clear(); 
+             foreach (var Element in updatedData)
+             {
+                 Gewichtsdaten.Add(Element);
+             }
+         }*/
     }
-}
+    }

@@ -3,26 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Gewichtsdatenapp_LiveChart.ViewModel"
              x:Class="Gewichtsdatenapp_LiveChart.View.MainPage"
-    Title="BMI Berechnung">
+             Title="BMI Berechnung">
     <ContentPage.BindingContext>
         <vm:BaseViewModel />
     </ContentPage.BindingContext>
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
-            <Entry Text="{Binding Weight, Mode=TwoWay}" 
+            <Entry Text="{Binding Weight}" 
                    Placeholder="Gewicht (kg)" 
                    Keyboard="Numeric" />
 
-            <Entry Text="{Binding Height, Mode=TwoWay}" 
+            <Entry Text="{Binding Height}" 
                    Placeholder="Größe (m)" 
                    Keyboard="Numeric" />
 
-            <Entry Text="{Binding Age, Mode=TwoWay}" 
+            <Entry Text="{Binding Age}" 
                    Placeholder="Alter (Jahre)" 
                    Keyboard="Numeric" />
 
-            <Picker SelectedItem="{Binding Gender, Mode=TwoWay}" 
+            <Picker SelectedItem="{Binding Gender}" 
                     Title="Geschlecht auswählen">
                 <Picker.Items>
                     <x:String>Männlich</x:String>
@@ -32,11 +32,13 @@
 
             <Button Text="Speichern und BMI berechnen" 
                     Command="{Binding AddWerteCommand}"
-                    BackgroundColor="green" />
-
+                    BackgroundColor="Green"
+                    TextColor="White" />
+            
             <Button Text="Daten anzeigen" 
                     Command="{Binding ShowDataCommand}"
-                    BackgroundColor="blue" />
+                    BackgroundColor="Blue"
+                    TextColor="White" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
