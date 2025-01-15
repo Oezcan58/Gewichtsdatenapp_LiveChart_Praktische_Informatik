@@ -1,8 +1,8 @@
-﻿using Gewichtsdatenapp_LiveChart.Model;
+using Gewichtsdatenapp_LiveChart.Model;
 
 namespace Gewichtsdatenapp_LiveChart.Services
 {
-    public interface ISpeicherplatz
+    public interface ISpeicherplatz //Interface für Speicherplatz (Speicherung der Daten) 
     {
         List<Werte> LoadData();
         Task<List<Werte>> LoadDataAsync();
