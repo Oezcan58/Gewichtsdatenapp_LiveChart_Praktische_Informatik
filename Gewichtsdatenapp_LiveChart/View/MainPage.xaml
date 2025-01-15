@@ -1,44 +1,67 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Gewichtsdatenapp_LiveChart.ViewModel"
              x:Class="Gewichtsdatenapp_LiveChart.View.MainPage"
-             Title="BMI Berechnung">
-    <ContentPage.BindingContext>
-        <vm:BaseViewModel />
-    </ContentPage.BindingContext>
+             Title="BMI Berechnung"
+             BackgroundColor="#1E1E1E">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
-            <Entry Text="{Binding Weight}" 
-                   Placeholder="Gewicht (kg)" 
-                   Keyboard="Numeric" />
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <Label Text="BMI Berechnung" 
+                   FontSize="24" 
+                   HorizontalOptions="Center"
+                   TextColor="White" />
 
-            <Entry Text="{Binding Height}" 
-                   Placeholder="Größe (m)" 
-                   Keyboard="Numeric" />
+            <Border Stroke="#444" 
+                    StrokeThickness="2" 
+                    BackgroundColor="#292929" 
+                    StrokeShape="RoundRectangle 10">
+                <VerticalStackLayout Spacing="15" Padding="10">
+                    <Entry Text="{Binding Weight}" 
+                           Placeholder="Gewicht (kg)" 
+                           Keyboard="Numeric"
+                           TextColor="White"
+                           PlaceholderColor="Gray"
+                           BackgroundColor="#1E1E1E" />
 
-            <Entry Text="{Binding Age}" 
-                   Placeholder="Alter (Jahre)" 
-                   Keyboard="Numeric" />
+                    <Entry Text="{Binding Height}" 
+                           Placeholder="Größe (m)" 
+                           Keyboard="Numeric"
+                           TextColor="White"
+                           PlaceholderColor="Gray"
+                           BackgroundColor="#1E1E1E" />
 
-            <Picker SelectedItem="{Binding Gender}" 
-                    Title="Geschlecht auswählen">
-                <Picker.Items>
-                    <x:String>Männlich</x:String>
-                    <x:String>Weiblich</x:String>
-                </Picker.Items>
-            </Picker>
+                    <Entry Text="{Binding Age}" 
+                           Placeholder="Alter (Jahre)" 
+                           Keyboard="Numeric"
+                           TextColor="White"
+                           PlaceholderColor="Gray"
+                           BackgroundColor="#1E1E1E" />
+
+                    <Picker SelectedItem="{Binding Gender}" 
+                            Title="Geschlecht auswählen"
+                            ItemsSource="{Binding GenderValues}"
+                            TextColor="White"
+                            BackgroundColor="#1E1E1E"
+                            TitleColor="Gray" />
+                </VerticalStackLayout>
+            </Border>
 
             <Button Text="Speichern und BMI berechnen" 
                     Command="{Binding AddWerteCommand}"
-                    BackgroundColor="Green"
-                    TextColor="White" />
-            
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    CornerRadius="10"
+                    FontSize="16"
+                    Padding="10" />
+
             <Button Text="Daten anzeigen" 
                     Command="{Binding ShowDataCommand}"
-                    BackgroundColor="Blue"
-                    TextColor="White" />
+                    BackgroundColor="#2196F3"
+                    TextColor="White"
+                    CornerRadius="10"
+                    FontSize="16"
+                    Padding="10" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
