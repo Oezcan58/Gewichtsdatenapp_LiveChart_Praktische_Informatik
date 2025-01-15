@@ -1,30 +1,22 @@
 ﻿using Gewichtsdatenapp_LiveChart.Service;
 using Gewichtsdatenapp_LiveChart.Services;
-using LiveChartsCore; 
-using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Maui;
 namespace Gewichtsdatenapp_LiveChart
 {
     public partial class App : Application
     {
-        private static ISpeicherplatz _speicherplatz;
-        public static ISpeicherplatz Speicherplatz => _speicherplatz ??= CreateSpeicherplatz();
+        private static ISpeicherplatz _speicherplatz;//Singleton für den Speicherplatz-Service
+        public static ISpeicherplatz Speicherplatz => _speicherplatz ??= CreateSpeicherplatz();//Initialisiert den Speicherplatz-Service, falls nicht vorhanden
 
         public App()
         {
             InitializeComponent();
 
 
-            MainPage = new AppShell();
+            MainPage = new AppShell();//
 
-            /*
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-            {
-                System.Diagnostics.Debug.WriteLine($"Unhandled Exception: {e.ExceptionObject}");
-            };*/
         }
 
-        private static ISpeicherplatz CreateSpeicherplatz()
+        private static ISpeicherplatz CreateSpeicherplatz()//Erstellt den Speicherplatz-Service mit einem Dateipfad
         {
             try
             {
