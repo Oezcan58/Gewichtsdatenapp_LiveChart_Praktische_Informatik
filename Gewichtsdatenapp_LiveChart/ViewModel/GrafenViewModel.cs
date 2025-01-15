@@ -1,126 +1,126 @@
-﻿/*using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using LiveChartsCore;
+﻿sing CommunityToolkit.Mvvm.ComponentModel;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore;
+using Gewichtsdatenapp_LiveChart.Model;
+using System.Collections.Specialized;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
-using Gewichtsdatenapp_LiveChart.Model;
+using System.Collections.ObjectModel;
 
 namespace Gewichtsdatenapp_LiveChart.ViewModel
 {
-    public partial class GrafenViewModel : ObservableObject
+    public partial class GraphViewModel : ObservableObject //ViewModel für die Graphenseite
     {
         [ObservableProperty]
-        private ISeries[] _weightSeries;
+        private ObservableCollection<ISeries> _weightSeries;
 
         [ObservableProperty]
-        private ISeries[] _bmiSeries;
+        private ObservableCollection<ISeries> _bmiSeries;
 
         [ObservableProperty]
-        private Axis[] _xAxes;
+        private ObservableCollection<Axis> _xAxes;
 
         [ObservableProperty]
-        private Axis[] _yAxesWeight;  // Separate Y-Achse für Gewicht
+        private ObservableCollection<Axis> _yAxesWeight;
 
         [ObservableProperty]
-        private Axis[] _yAxesBmi;     // Separate Y-Achse für BMI
+        private ObservableCollection<Axis> _yAxesBmi;
 
-        public GrafenViewModel()
+        public GraphViewModel(BaseViewModel baseViewModel)
         {
-            LoadChartData();
+            var weightData = baseViewModel.Gewichtsdaten;
+
+            WeightSeries = new ObservableCollection<ISeries>();//
+            BmiSeries = new ObservableCollection<ISeries>();
+            XAxes = new ObservableCollection<Axis>();
+            YAxesWeight = new ObservableCollection<Axis>();
+            YAxesBmi = new ObservableCollection<Axis>();
+
+            GenerateGraphData(weightData); // Generiert die Daten für die Diagramme
+
+            weightData.CollectionChanged += Gewichtsdaten_CollectionChanged;//Aktualisiert Diagrammdaten bei Änderungen
         }
-        [RelayCommand]
-        public void LoadChartData()
+
+
+        private void GenerateGraphData(IEnumerable<Werte> weightData)//Generiert Diagrammdaten aus Gewichtsdaten
         {
-            var werte = App.Speicherstand.LoadData();
+            WeightSeries.Clear();
+            BmiSeries.Clear();
+            XAxes.Clear();
+            YAxesWeight.Clear();
+            YAxesBmi.Clear();
 
-            if (werte == null || werte.Count == 0)
+            if (!weightData.Any())
             {
-                WeightSeries = new ISeries[]
+                WeightSeries.Add(new LineSeries<double>
                 {
-                    new LineSeries<double>
-                    {
-                        Values = new List<double>(),
-                        Name = "Keine Daten vorhanden",
-                        Fill = null,
-                        Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 3 }
-                    }
-                };
+                    Values = new List<double>(),
+                    Name = "Keine Daten vorhanden",
+                    Fill = null,
+                    Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 3 }
+                });
 
-                BmiSeries = new ISeries[]
+                BmiSeries.Add(new LineSeries<double>
                 {
-                    new LineSeries<double>
-                    {
-                        Values = new List<double>(),
-                        Name = "Keine Daten vorhanden",
-                        Fill = null,
-                        Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 3 }
-                    }
-                };
+                    Values = new List<double>(),
+                    Name = "Keine Daten vorhanden",
+                    Fill = null,
+                    Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 3 }
+                });
 
                 return;
             }
 
-            var values = werte.Select(w => w.Weight).ToList();
-            var dates = werte.Select(w => w.Date.ToString("dd.MM.")).ToList();
-            var bmis = werte.Select(w => w.BMI).ToList();
-
-            WeightSeries = new ISeries[]
+            WeightSeries.Add(new LineSeries<double>
             {
-                new LineSeries<double>
-                {
-                    Values = values,
-                    Name = "Gewicht",
-                    Fill = null,
-                    GeometrySize = 15,
-                    Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 4 },
-                    GeometryStroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 4 }
-                }
-            };
+                Values = weightData.Select(w => w.Weight).ToList(),
+                Name = "Gewicht",
+                Fill = null,
+                GeometrySize = 15,
+                Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 4 },
+                GeometryStroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 4 }
+            });
 
-            BmiSeries = new ISeries[]
+            BmiSeries.Add(new LineSeries<double>
             {
-                new LineSeries<double>
-                {
-                    Values = bmis,
-                    Name = "BMI",
-                    Fill = null,
-                    GeometrySize = 15,
-                    Stroke = new SolidColorPaint(SKColors.Green) { StrokeThickness = 4 },
-                    GeometryStroke = new SolidColorPaint(SKColors.Green) { StrokeThickness = 4 }
-                }
-            };
+                Values = weightData.Select(w => w.Bmi).ToList(),
+                Name = "BMI",
+                Fill = null,
+                GeometrySize = 15,
+                Stroke = new SolidColorPaint(SKColors.Green) { StrokeThickness = 4 },
+                GeometryStroke = new SolidColorPaint(SKColors.Green) { StrokeThickness = 4 }
+            });
 
-            XAxes = new Axis[]
+            XAxes.Add(new Axis
             {
-                new Axis
-                {
-                    Labels = dates,
-                    LabelsRotation = 0
-                }
-            };
+                Labels = weightData.Select(w => w.Date.ToString("dd.MM.")).ToList(),
+                LabelsRotation = 0,
+                LabelsPaint = new SolidColorPaint(SKColors.White)
+            });
 
-            YAxesWeight = new Axis[]
-       {
-            new Axis
+            YAxesWeight.Add(new Axis
             {
                 Name = "Gewicht (kg)",
-                NamePaint = new SolidColorPaint(SKColors.Blue),
-                LabelsPaint = new SolidColorPaint(SKColors.Blue),
+                NamePaint = new SolidColorPaint(SKColors.LightBlue),
+                LabelsPaint = new SolidColorPaint(SKColors.LightBlue),
                 TextSize = 14
-            }
-       };
+            });
 
-            YAxesBmi = new Axis[]
-            {
-            new Axis
+            YAxesBmi.Add(new Axis
             {
                 Name = "BMI",
-                NamePaint = new SolidColorPaint(SKColors.Green),
-                LabelsPaint = new SolidColorPaint(SKColors.Green),
+                NamePaint = new SolidColorPaint(SKColors.LightGreen),
+                LabelsPaint = new SolidColorPaint(SKColors.LightGreen),
                 TextSize = 14
+            });
+        }
+
+        private void Gewichtsdaten_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)//Aktualisiert Diagramme bei Datenänderungen
+        {
+            if (sender is IEnumerable<Werte> weightData)
+            {
+                GenerateGraphData(weightData);
             }
-            };
         }
     }
-}*/
+}
