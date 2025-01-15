@@ -22,6 +22,7 @@ namespace Gewichtsdatenapp_LiveChart
                 });
             builder.Services.AddSingleton<ISpeicherplatz, Speicherplatz>();
             builder.Services.AddSingleton<BaseViewModel>();
+            builder.Services.AddSingleton<GraphViewModel>();
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<WerteSeite>();
             builder.Services.AddTransient<GrafenSeite>();
