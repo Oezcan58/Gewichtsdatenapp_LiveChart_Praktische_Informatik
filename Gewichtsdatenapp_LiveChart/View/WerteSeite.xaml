@@ -1,36 +1,53 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Gewichtsdatenapp_LiveChart.ViewModel"
              x:Class="Gewichtsdatenapp_LiveChart.View.WerteSeite"
-             Title="Gespeicherte Werte">
-    <ContentPage.BindingContext>
-        <vm:BaseViewModel />
-    </ContentPage.BindingContext>
-
+             Title="Gespeicherte Werte"
+             BackgroundColor="#1E1E1E">
     <ScrollView>
-        <StackLayout Padding="15">
-            
-                <CollectionView ItemsSource="{Binding Gewichtsdaten}" 
-                              SelectionMode="None">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <StackLayout Spacing="10">
-                                <Label Text="{Binding Date, StringFormat='Datum: {0:dd.MM.yyyy}'}" />
-                                <Label Text="{Binding Weight, StringFormat='Gewicht: {0} kg'}" />
-                                <Label Text="{Binding Height, StringFormat='Größe: {0} m'}" />
-                                <Label Text="{Binding Bmi, StringFormat='BMI: {0:F2}'}" />
-                                <Label Text="{Binding Gender, StringFormat='Geschlecht: {0}'}" />
-                                <Label Text="{Binding Gewichtsklasse, StringFormat='Kategorie: {0}'}" />
-                                <Button Text="Löschen" 
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BaseViewModel}}, Path=DeleteWerteCommand}"
-                                            CommandParameter="{Binding .}"
-                                            BackgroundColor="Red"
-                                            TextColor="White" />
-                            </StackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-        </StackLayout>
+        <VerticalStackLayout Padding="15">
+            <CollectionView ItemsSource="{Binding Gewichtsdaten}" 
+                            SelectionMode="None"
+                            BackgroundColor="Transparent">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Stroke="LightGreen"
+                                StrokeThickness="2"
+                                Background="#292929"
+                                Margin="0,10"
+                                Padding="10"
+                                StrokeShape="RoundRectangle 10">
+                            <VerticalStackLayout Spacing="5">
+                                <Label Text="{Binding Date, StringFormat='Datum: {0:dd.MM.yyyy}'}" 
+                                       TextColor="White"
+                                       FontSize="16" />
+                                <Label Text="{Binding Weight, StringFormat='Gewicht: {0} kg'}" 
+                                       TextColor="White"
+                                       FontSize="16" />
+                                <Label Text="{Binding Height, StringFormat='Größe: {0} m'}" 
+                                       TextColor="White"
+                                       FontSize="16" />
+                                <Label Text="{Binding Bmi, StringFormat='BMI: {0:F2}'}" 
+                                       TextColor="White"
+                                       FontSize="16" />
+                                <Label Text="{Binding Gender, StringFormat='Geschlecht: {0}'}" 
+                                       TextColor="White"
+                                       FontSize="16" />
+                                <Label Text="{Binding Gewichtsklasse, StringFormat='Kategorie: {0}'}" 
+                                       TextColor="White"
+                                       FontSize="16" />
+                                <Button Text="Löschen"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BaseViewModel}}, Path=DeleteWerteCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="#FF5555"
+                                        TextColor="White"
+                                        CornerRadius="10"
+                                        Padding="5" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
