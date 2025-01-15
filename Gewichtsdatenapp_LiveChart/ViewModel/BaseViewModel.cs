@@ -4,11 +4,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Gewichtsdatenapp_LiveChart.Model;
 using Gewichtsdatenapp_LiveChart.Services;
+using Gewichtsdatenapp_LiveChart.Enums;
 
 
 namespace Gewichtsdatenapp_LiveChart.ViewModel
 {
-    public partial class BaseViewModel : ObservableObject
+    public partial class BaseViewModel : ObservableObject // WerteViewModel
     {
         private readonly ISpeicherplatz _speicherplatz;
 
@@ -22,93 +23,79 @@ namespace Gewichtsdatenapp_LiveChart.ViewModel
         private int _age;
 
         [ObservableProperty]
-        private string _gender = string.Empty;
-        [ObservableProperty]
-        private DateTime _Date = DateTime.Now;
-        /*[ObservableProperty]
-        private bool _isRefreshing;*/
+        private Gender? gender;
+
+        public Array GenderValues => Enum.GetValues(typeof(Gender));
+
         [ObservableProperty]
         private ObservableCollection<Werte> _gewichtsdaten;
 
         public BaseViewModel()
         {
             _speicherplatz = App.Speicherplatz;
-            _gewichtsdaten = new ObservableCollection<Werte>(_speicherplatz.LoadData());
+            InitGewichtsdatenFromFile();
         }
 
         [RelayCommand]
-        public async Task SaveDataAsync()
+        public async Task SaveDataAsync()//
         {
             await _speicherplatz.SaveDataAsync(Gewichtsdaten.ToList());
         }
 
         [RelayCommand]
-        public async Task ReloadDataAsync()
+        public async Task InitGewichtsdatenFromFile()//
         {
-            try
-            {
-                /*IsRefreshing = true;*/
-                var data = await _speicherplatz.LoadDataAsync();
-                Gewichtsdaten.Clear();
-                foreach (var item in data)
-                {
-                    Gewichtsdaten.Add(item);
-                }
-            }
-            catch (Exception ex)
-            {
-                await App.Current.MainPage.DisplayAlert("Fehler", "Laden fehlgeschlagen", "OK");
-                System.Diagnostics.Debug.WriteLine($"Reload error: {ex.Message}");
-            }
-           /* finally
-            {
-                IsRefreshing = false;
-            }*/
+
+
+            var data = await _speicherplatz.LoadDataAsync();
+            Gewichtsdaten = new ObservableCollection<Werte>(data);
+
         }
 
 
         [RelayCommand/*(CanExecute = nameof(CanAddWerte))*/]
-        public async Task AddWerteAsync()
+        public async Task AddWerteAsync()//
         {
-           
-            if (Weight > 0 &&Weight<590 && Height > 0 && Height<2.80 && Age > 18 && Age<120 && !string.IsNullOrEmpty(Gender))
+
+            if (Weight is > 0 and < 590 && Height is > 0 and < 2.80 && Age is > 18 and < 120 && Gender != null)
             {
-                var neueWerte = new Werte
-                {
-                    Weight = Weight,
-                    Height = Height,
-                    Age = Age,
-                    Gender = Gender
-                };
+                var neueWerte = Werte.CreateWerte(Weight, Height, Age, Gender.Value, DateTime.Now);
 
                 Gewichtsdaten.Add(neueWerte);
                 await SaveDataAsync();
-                /*ReloadData();*/
-                /*var grafenViewModel = new GrafenViewModel();
-                grafenViewModel.LoadChartData();*/
-
-                Weight = 0;
-                Height = 0;
-                Age = 0;
-                Gender = string.Empty;
-
-                
 
                 App.Current.MainPage.DisplayAlert("Gespeicherte Daten", "Gespeichert", "OK");
             }
             else
             {
-                App.Current.MainPage.DisplayAlert("Fehler", "Daten konnten nicht gespeichert werden", "OK");
+                var data = new StringBuilder();
+                foreach (Werte value in Gewichtsdaten)
+                {
+                    string genderString = String.Empty;
+
+                    switch (value.Gender)
+                    {
+                        case Enums.Gender.Männlich:
+                            genderString = "Männlich";
+                            break;
+                        case Enums.Gender.Weiblich:
+                            genderString = "Weiblich";
+                            break;
+                    }
+
+                    data.AppendLine($"Datum: {value.Date:dd.MM.yyyy}, Gewicht: {value.Weight} kg, Größe: {value.Height} m, Alter: {value.Age}, Geschlecht: {genderString}, BMI: {value.Bmi}, Gewichtsklasse: {value.Gewichtsklasse}");
+                }
+
+
+                App.Current.MainPage.DisplayAlert("Gespeicherte Daten", data.ToString(), "OK");
             }
         }
-       /* private bool CanAddWerte()
-        {
-            return Weight > 0 && Height > 0 && Age > 18 && !string.IsNullOrEmpty(Gender);
-        }*/
+
+
         [RelayCommand]
-        public void ShowData()
+        public void ShowData()//
         {
-            /*ReloadData();*/
+
 
             var Ausgabe = new StringBuilder();
             foreach (var Eingabe in Gewichtsdaten)
@@ -120,7 +107,7 @@ namespace Gewichtsdatenapp_LiveChart.ViewModel
         }
 
         [RelayCommand]
-        public async Task DeleteWerteAsync(Werte werte)
+        public async Task DeleteWerteAsync(Werte werte)//
         {
             if (werte == null) return;
 
@@ -145,20 +132,6 @@ namespace Gewichtsdatenapp_LiveChart.ViewModel
                 }
             }
         }
-        /* [RelayCommand]
-         public void SaveData()
-         {
-             App.Speicherplatz.SaveData(Gewichtsdaten.ToList());
-         }
-         [RelayCommand]
-         public void ReloadData()
-         {
-             var updatedData = App.Speicherplatz.LoadData();
-             Gewichtsdaten.Clear(); 
-             foreach (var Element in updatedData)
-             {
-                 Gewichtsdaten.Add(Element);
-             }
-         }*/
+
     }
-    }
+}
