@@ -5,7 +5,7 @@ using Gewichtsdatenapp_LiveChart.Services;
 
 namespace Gewichtsdatenapp_LiveChart.Service
 {
-    public class Speicherplatz : ISpeicherplatz
+    public class Speicherplatz : ISpeicherplatz //Speicherplatz Klasse implementiert das Interface ISpeicherplatz
     {
         private readonly string _filePath;
 
@@ -14,7 +14,7 @@ namespace Gewichtsdatenapp_LiveChart.Service
             _filePath = filePath;
         }
 
-        public List<Werte> LoadData()
+        public List<Werte> LoadData()//Lädt die Daten aus der Datei
         {
             if (!File.Exists(_filePath))
                 return new List<Werte>();
@@ -31,7 +31,7 @@ namespace Gewichtsdatenapp_LiveChart.Service
             }
         }
 
-        public async Task<List<Werte>> LoadDataAsync()
+        public async Task<List<Werte>> LoadDataAsync()//Lädt die Daten aus der Datei
         {
             if (!File.Exists(_filePath))
                 return new List<Werte>();
@@ -48,7 +48,7 @@ namespace Gewichtsdatenapp_LiveChart.Service
             }
         }
 
-        public void SaveData(List<Werte> daten)
+        public void SaveData(List<Werte> daten)//Speichert die Daten in der Datei
         {
             try
             {
@@ -64,7 +64,7 @@ namespace Gewichtsdatenapp_LiveChart.Service
             }
         }
 
-        public async Task SaveDataAsync(List<Werte> daten)
+        public async Task SaveDataAsync(List<Werte> daten)//Speichert die Daten in der Datei
         {
             try
             {
