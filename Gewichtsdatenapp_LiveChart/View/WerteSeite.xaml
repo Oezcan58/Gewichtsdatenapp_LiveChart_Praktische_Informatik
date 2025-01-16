@@ -5,15 +5,17 @@
              Title="Gespeicherte Werte"
              BackgroundColor="#1E1E1E">
     <ScrollView>
+        <!-- Liste der Gepeicherten Werte -->
         <VerticalStackLayout Padding="15">
             <CollectionView ItemsSource="{Binding Gewichtsdaten}" 
                             SelectionMode="None"
                             BackgroundColor="Transparent">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
+                        <!-- Eine Elementliste -->
                         <Border Stroke="LightGreen"
                                 StrokeThickness="2"
-                                Background="#292929"
+                                Background="#242222"
                                 Margin="0,10"
                                 Padding="10"
                                 StrokeShape="RoundRectangle 10">
@@ -36,10 +38,11 @@
                                 <Label Text="{Binding Gewichtsklasse, StringFormat='Kategorie: {0}'}" 
                                        TextColor="White"
                                        FontSize="16" />
+                                <!-- Löschbutton -->
                                 <Button Text="Löschen"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BaseViewModel}}, Path=DeleteWerteCommand}"
                                         CommandParameter="{Binding .}"
-                                        BackgroundColor="#FF5555"
+                                        BackgroundColor="#e8402a"
                                         TextColor="White"
                                         CornerRadius="10"
                                         Padding="5" />
