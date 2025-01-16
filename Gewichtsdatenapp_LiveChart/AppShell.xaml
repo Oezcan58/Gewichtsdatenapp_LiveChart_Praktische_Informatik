@@ -3,17 +3,24 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:view="clr-namespace:Gewichtsdatenapp_LiveChart.View"
-    x:Class="Gewichtsdatenapp_LiveChart.AppShell">
+    x:Class="Gewichtsdatenapp_LiveChart.AppShell"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.BackgroundColor="#1E1E1E"
+    Shell.TitleColor="White"
+    Shell.TabBarBackgroundColor="#444"
+    Shell.TabBarTitleColor="LightGreen"
+    Shell.TabBarUnselectedColor="White">
+
     <TabBar>
-        <ShellContent Title="Eingabe"
-                  Icon="home.png"
-                  ContentTemplate="{DataTemplate view:MainPage}" />
-
-        <ShellContent Title="Werte"
-                  Icon="list.png"
-                  ContentTemplate="{DataTemplate view:WerteSeite}" />
-        <ShellContent Title="Grafik"
-                  ContentTemplate="{DataTemplate view:GrafenSeite}" />
-
+        <Tab Title="Eingabe">
+            <ShellContent ContentTemplate="{DataTemplate view:MainPage}" />
+        </Tab>
+        <Tab Title="Werte">
+            <ShellContent ContentTemplate="{DataTemplate view:WerteSeite}" />
+        </Tab>
+        <Tab Title="Grafik">
+            <ShellContent ContentTemplate="{DataTemplate view:GrafenSeite}" />
+        </Tab>
     </TabBar>
+
 </Shell>
