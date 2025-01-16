@@ -9,7 +9,7 @@ using Gewichtsdatenapp_LiveChart.Enums;
 
 namespace Gewichtsdatenapp_LiveChart.ViewModel
 {
-    public partial class BaseViewModel : ObservableObject // WerteViewModel
+    public partial class BaseViewModel : ObservableObject // ViewModel für die MainPage und Werte-Seite
     {
         private readonly ISpeicherplatz _speicherplatz;
 
@@ -37,13 +37,13 @@ namespace Gewichtsdatenapp_LiveChart.ViewModel
         }
 
         [RelayCommand]
-        public async Task SaveDataAsync()//
+        public async Task SaveDataAsync()//Speichert die aktuellen Daten der Sammlung asynchron
         {
             await _speicherplatz.SaveDataAsync(Gewichtsdaten.ToList());
         }
 
         [RelayCommand]
-        public async Task InitGewichtsdatenFromFile()//
+        public async Task InitGewichtsdatenFromFile()//Lädt die gespeicherten Daten aus der Datei und initialisiert die Sammlung
         {
 
 
@@ -54,7 +54,7 @@ namespace Gewichtsdatenapp_LiveChart.ViewModel
 
 
         [RelayCommand/*(CanExecute = nameof(CanAddWerte))*/]
-        public async Task AddWerteAsync()//
+        public async Task AddWerteAsync()//Fügt einen neuen Eintrag hinzu, wenn die Daten den Bedingungen entsprechen
         {
 
             if (Weight is > 0 and < 590 && Height is > 0 and < 2.80 && Age is > 18 and < 120 && Gender != null)
@@ -93,7 +93,7 @@ namespace Gewichtsdatenapp_LiveChart.ViewModel
 
 
         [RelayCommand]
-        public void ShowData()//
+        public void ShowData()//Zeigt alle gespeicherten Daten in einer Nachricht an
         {
 
 
@@ -107,7 +107,7 @@ namespace Gewichtsdatenapp_LiveChart.ViewModel
         }
 
         [RelayCommand]
-        public async Task DeleteWerteAsync(Werte werte)//
+        public async Task DeleteWerteAsync(Werte werte)//Löscht einen Eintrag nach Bestätigung des Benutzers
         {
             if (werte == null) return;
 
