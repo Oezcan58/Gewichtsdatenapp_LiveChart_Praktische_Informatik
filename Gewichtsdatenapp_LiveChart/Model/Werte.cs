@@ -13,7 +13,7 @@ namespace Gewichtsdatenapp_LiveChart.Model
         public Gender Gender { get; set; }
         public DateTime Date { get; set; }
 
-        public static Werte? CreateWerte(double weight, double height, int age, Gender gender, DateTime creationTime)
+        public static Werte? CreateWerte(double weight, double height, int age, Gender gender, DateTime creationTime)//Erstellt ein neues Objekt mit den neuen Daten 
         {
             if (height == 0)
             {
@@ -39,7 +39,7 @@ namespace Gewichtsdatenapp_LiveChart.Model
         }
 
 
-        private static double BerechneBmi(double weight, double height)
+        private static double BerechneBmi(double weight, double height)//Berechnet den BMI basierend auf Gewicht und Größe
         {
             return Math.Round(weight / (height * height), 2);
         }
