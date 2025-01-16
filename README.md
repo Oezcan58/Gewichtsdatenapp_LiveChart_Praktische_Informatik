@@ -15,7 +15,7 @@ Height is > 0 and < 2.80
 Age is > 18 and < 120
 Gender != null
  
-Im Windows Mode funktioniert , und in Andrioid der . um Dezimalzahlen anzugeben.
+Im Windows Mode funktioniert , und in Android der . um Dezimalzahlen anzugeben.
 
 (Nur im Fall das die Nuget-Packages nicht gefunden wurden)
 
