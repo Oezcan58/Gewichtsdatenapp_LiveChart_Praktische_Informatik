@@ -6,6 +6,7 @@
              Title="Gewichts- und BMI-Verlauf"
              BackgroundColor="#1E1E1E">
     <Grid Padding="20" RowDefinitions="Auto,*,Auto,*" ColumnDefinitions="*">
+        <!--Gewichtsverlauf-->
 
         <Label Grid.Row="0" Grid.Column="0"
                Text="Gewichtsverlauf"
@@ -20,6 +21,7 @@
             YAxes="{Binding YAxesWeight}" 
             VerticalOptions="FillAndExpand" 
             HorizontalOptions="FillAndExpand" />
+        <!--Bmiverlauf-->
 
         <Label Grid.Row="3" Grid.Column="0"
                Text="BMI-Verlauf"
