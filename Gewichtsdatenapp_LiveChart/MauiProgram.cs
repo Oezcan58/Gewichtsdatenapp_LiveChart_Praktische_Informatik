@@ -13,17 +13,17 @@ namespace Gewichtsdatenapp_LiveChart
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseSkiaSharp()
+                .UseSkiaSharp()//Aktiviert SkiaSharp für Grafiken
                 
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
-            builder.Services.AddSingleton<ISpeicherplatz, Speicherplatz>();
+            builder.Services.AddSingleton<ISpeicherplatz, Speicherplatz>();//Fügt die drei als Singleton hinzu (Dependency Injection)
             builder.Services.AddSingleton<BaseViewModel>();
             builder.Services.AddSingleton<GraphViewModel>();
-            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<MainPage>();//Fügt die drei als Transient hinzu (Dependency Injection)
             builder.Services.AddTransient<WerteSeite>();
             builder.Services.AddTransient<GrafenSeite>();
 #if DEBUG
