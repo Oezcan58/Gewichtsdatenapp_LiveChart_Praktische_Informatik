@@ -1,4 +1,4 @@
-﻿sing CommunityToolkit.Mvvm.ComponentModel;
+u﻿sing CommunityToolkit.Mvvm.ComponentModel;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore;
 using Gewichtsdatenapp_LiveChart.Model;
