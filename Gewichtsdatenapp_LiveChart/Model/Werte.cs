@@ -83,6 +83,3 @@ namespace Gewichtsdatenapp_LiveChart.Model
         }
     }
 }
-
-
-}
