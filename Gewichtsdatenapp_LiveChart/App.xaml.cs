@@ -20,10 +20,7 @@ namespace Gewichtsdatenapp_LiveChart
         {
             try
             {
-                string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "Gewichtsdaten.json");
-
+                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"Gewichtsdaten.json");
                 return new Speicherplatz(filePath);
             }
             catch (Exception ex)
@@ -34,3 +31,4 @@ namespace Gewichtsdatenapp_LiveChart
         }
     }
 }
+
