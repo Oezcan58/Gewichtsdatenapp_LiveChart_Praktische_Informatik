@@ -11,4 +11,4 @@ namespace Gewichtsdatenapp_LiveChart.View
         }
     }
 }
-}
+
